@@ -31,3 +31,7 @@ Once you have a simulation output, you can use the plot commands:
 python3 plot_num_particles_per_isotope.py -i foo.sim
 python3 plot_released_energy_per_isotope.py -i foo.sim
 ```
+
+The `plot_num_particles_per_isotope.py` program supports an optional `-e` flag. If given, then it 
+also plots a theoretical curve. Note that it is only an example with some baked in constants,
+applicable only to the `thorium.decaychain` decaychain.

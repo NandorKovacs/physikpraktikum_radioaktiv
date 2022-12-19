@@ -1,0 +1,252 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc} % this is needed for umlauts
+\usepackage[ngerman]{babel} % this is needed for umlauts
+\usepackage[T1]{fontenc}    % this is needed for correct output of umlauts in pdf
+\usepackage{csquotes}
+\usepackage{amsmath,systeme}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[a4paper, margin=1in]{geometry}
+\definecolor{dark-green}{rgb}{0.0, 0.4, 0.0}
+\newcommand{\code}[1]{{\color{dark-green}\texttt{\textbf{#1}}}}
+\newtheorem{lemma}{Lemma}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Computational Physics Lab HS 22/23 \\ Radioaktive Zerfälle}
+\author{Nandor Kovacs \& Celine Schuster \\ 
+github.com/NandorKovacs/physikpraktikum\_radioaktiv}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{Formulierung der Fragestellung}
+Wir untersuchen in diesem Bericht radioaktive Zerfälle. Wir simulieren den
+Zerfall von einer gegebenen Menge von einem Isotop. Dabei simulieren wir auch
+den Zerfall von den entstehenden Isotopen, bis ein stabiles Isotop erreicht
+wird. Jedes Isotop in so einer Simulation hat eine Funktion $F(t)$, wo die Menge
+des Isotops als Funktion der Zeit angibt.
+
+Bei jedem radiaktivem Zerfall wird eine gewisse Menge von Energie freigesetzt.
+Die Funktion $E(t)$ ist die kumulative Energiemenge zur Zeit $t$ die aus dem
+Zerfall des jeweiligen Isotops freigesetzt wurde.
+
+Wir schauen uns folgende Fragestellungen an:
+\begin{enumerate}
+  \item Sind die Funktionen $F$ der Isotope ähnlich, oder unterscheiden sie sich
+  fest?
+  \item Verglichen mit der theoretischen Funktion, sind unsere erhaltene Daten
+  aus der Simulation ähnlich?
+  \item Sind die Funktionen $E$ der Isotope ähnlich, oder unterscheiden sie sich
+  fest?
+\end{enumerate}
+
+\section{Physikalische Hintergründe}
+
+\subsection{Die Menge eines Isotops als Funktion der Zeit}
+Schauen wir zuerst die Funktion and, die das Ausgangsisotop beschreibt. Für ein
+einzelnes Atom ist die Wahrscheinlichkeit $p$ gegeben, dass es in einer
+gegebenen Zeit $dt$ zerfällt.
+
+\begin{align*}
+  E[-dN_1] &= 0\cdot (1-p) + 1\cdot p   \\
+  E[-dN_1] &= p                         
+\end{align*}          
+
+
+Wegen der linearität des Erwartungswerts $E[X] + E[Y] = E[X + Y]$ folgt also:
+\begin{align*}
+  E[-dN] &= p \cdot N\\
+\end{align*}
+
+Für ganz kleine $dt$, $p$ ist proportional zu $dt$. Ihren Verhältniss nennen wir $\lambda = \frac{p}{dt}$. Dann folg:
+
+\begin{align*}
+  -dN &= \lambda \cdot N \cdot dt  \\
+  \frac{dN}{dt} &= -\lambda N \\
+  (e^{-\lambda t})' &= e^{-\lambda t}\cdot (-\lambda)\\
+\\
+  N &= N_{0}e^{-\lambda t}
+\end{align*}
+
+$\lambda$ ist eine konstante, und kann in der Natur beobachtet werden.
+Die Menge des Ausgangsisotops als Funktion der Zeit ist ist also $N_{0}e^{-\lambda t}$.
+
+Für die nächsten Isotopen wird es schwieriger. Dort nämlich ist $-dN$ nicht mehr
+gleich $\lambda \cdot N \cdot dt$. Dies ist so weil Isotope nicht nur Zerfallen,
+sondern auch entstehen durch den Zerfall eines höhergeordnettes Isotops. Das
+höhergeordnette Isotop zerfällt mit einer gewissen Wahrscheinlichkeit $p_v$ in dieses,
+und einer gewisser Wahrscheinlichkeit in ein anderes Isotop. Darum:
+
+\begin{align*}
+  -dN_b &= \lambda \cdot N \cdot dt - dN_a \cdot p_v
+\end{align*}
+
+Angenommen das Ausgangsisotop a kann nur in das Isotop b zerfallen, sieht die Differentialgleichung für
+${F(t)}_{b}$ folgendermassen aus:
+
+\begin{align*}
+  -dN_b &= \lambda_b \cdot N_b \cdot dt - dN_a \cdot 1 \\
+  -dN_b &= \lambda_b \cdot N_b \cdot dt - e^{-\lambda_{a}t} \\
+  \frac{dN_b}{dt} &= \frac{e^{-\lambda_{a}t}}{dt} - \lambda_{b}N_b \\
+  \frac{dN_b}{dt} &= -e^{-\lambda_{a}t}\cdot \lambda_a - \lambda_{b}N_b \\
+  N_b &= \frac{\lambda_a}{\lambda_b - \lambda_a}N_{a}^{0}(e^{-\lambda_a t} - e^{-\lambda_b t}) + N_{b}^{0}{e^-\lambda_b t}
+\end{align*}
+
+\subsection{Die kumulativ freigesetzte Energie aller Zerfälle als Funktion der Zeit}
+Wenn wir die Zerfallsreihe beobachten, sehen wir das zwar oft riesige
+Unterschiede in der Halbwertszeit zwischen Isotopen vorkommen, jedoch die
+freigesetzte Energie bei einem Zerfall meist viel ähnlicher ist. Wir erwarten
+also, dass die Kurven der kumulativ freigesetzter Energie der Isotope viel
+vergleichbarer sind wie die Menge der existierenden Exemplare.
+
+
+\section{Programmiertechnik}
+\subsection{Simulations Algorithmus}
+Wir hatten zwei verschiedene Möglichkeiten: den Zerfall pro Zeiteinheit zu
+simulieren, oder den Schicksal der einzelnen Teilchen zu simulieren, und die
+resultierenden Daten zu vereinigen. Wegen dem grossen Unterschied der
+verschiedenen Halbwertszeiten ist die erste Methode nicht sinnvoll. Die
+kommenden Code-Snippets illustrieren die Hauptteile der zweiten Methode.
+
+\subsubsection{Zerfallstyp auswählen}
+\begin{lstlisting}[language=Python]
+if rng.uniform(0.0, 100.0) < self.alpha_decay.probability:
+  return self.alpha_decay
+return self.beta_decay
+\end{lstlisting}
+
+\subsubsection{Generation eines einzelnen Zerfall-Events}
+Nachdem der Zerfallstyp ausgelöst ist, wird der Zerfallszeitpunkt ausgewählt,
+indem man aus der exponentiellen Verteilung einen Wert zufällig zieht.
+
+\begin{lstlisting}[language=Python]
+  decay = isotope.pick_decay(self.rng)
+  if decay is None:
+      return None
+  
+  decay_time = t + self.rng.exponential(1.0 / decay.rate)
+\end{lstlisting}
+
+\subsubsection{Simulation des Schicksals eines Partikels}
+Ausgehend aus dem Ausgangsisotop generiern wir solange Zerfalls-Events, bis wir
+die gesamt Simulationszeit nicht übertreten, oder das stabile Isotop erreichen.
+
+\begin{lstlisting}[language=Python]
+events: list[DecayEvent] = []
+t = 0.0
+isotope_id = 0
+
+while True:
+    isotope = self.cfg.decay_chain.isotopes[isotope_id]
+    decay_event = self._generate_decay_event(particle, isotope, t)
+    if decay_event is None:
+        break
+    if decay_event.time > self.cfg.total_time:design
+        break
+    events.append(decay_event)
+    t = decay_event.time
+    isotope_id = decay_event.to_isotope
+\end{lstlisting}
+
+\subsection{Allgemeine Struktur}
+Wir haben das Programm so entworfen, dass die Simulation einen Datenfile
+produziert, und die Visualizationsprogramme diesen Datenfile interpretieren.
+Dies ermöglicht das Experimentieren mit verschiedenen Parametern während der
+Entwicklung des Programms.
+
+\begin{lstlisting}[language=Python]
+model.SimulationResults(cfg, events).write_file()
+...
+sr = model.SimulationResults.from_file(args.input)
+\end{lstlisting}
+
+\section{Resultate}
+\subsection{Die Menge eines Isotops als Funktion der Zeit}
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=65mm]{thoriumx_100-num_particles_per_isotope.png} &   \includegraphics[width=65mm]{thoriumx_1000-num_particles_per_isotope.png} \\
+    \includegraphics[width=65mm]{thoriumx_10000-num_particles_per_isotope.png} &   \includegraphics[width=65mm]{thoriumx_100000-num_particles_per_isotope.png}
+  \end{tabular}
+\end{figure}
+Dies sind Resultate von Experimenten mit dem Simulator. Wir beobachten dass
+die meisten Isotope kaum bis nicht sichtbar sind auf dem Graph. Das ist, da
+die im Vergleich zu den drei Isotopen mit der grössten Halbwertszeit eine so
+niedrige Halbwertszeit haben, dass sie in jedem Zeitschritt so oft zerfallen,
+wie neue Partikel entstehen.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{thoriumx_100000-num_particles_per_isotope-ymax100.png}
+\end{figure}
+  Das sieht man an diesem Beispiel gut. Hier ist das Bild sehr fest vergrössert.
+Es ist sichtbar, das viele Isotope sofort zerfallen sobald Partikel entstehen.
+
+Wir beobachten dass die Funktionen der Mutterpartikel im vergleich zu den
+Tochterpartikeln deutlich unterschiedlich sind.
+
+Im einfachen Fall ist die Menge von Zerfällen die in einem Moment geschehen zu
+der Menge der Partikel proportional.
+
+Dies ändert sich aber mit der Funktion des Mutterisotops. Neben der Abnahme der
+Partikel durch den Zerfall gibt es auch eine Zunahme durch den Zerfall des
+Mutterisotops.
+
+Die Differentialgleichung für die Funktion wird für jedes folgende Isotop immer
+komplizierter, da es sich immer weiter verschachtelt. Wir haben die Funktion für das erste und zweite Isotop
+ausgerechnet.
+
+In den vier Beispielen ist die Funktion für das zweite Isotop auch
+dargestellt. Sie passt sehr gut mit dem Verlauf des dritten Isotops überein.
+Grund dafür ist, dass das zweite Isotop, wie vorher beschrieben, sofort zerfällt
+wenn es entsteht. Das heisst, das es genau gleich schnell Partikel `abgibt' wie
+dessen Mutterisotop, also wird die Funktion des folgenden Isotops nicht
+beeinträchtigt wie im Normalfall.
+\subsection{Die kumulativ freigesetzte Energie aller Zerfälle als Funktion der Zeit}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{thoriumx_100000-released_energy_per_isotope.png}
+\end{figure}
+
+Wie erwartet unterscheiden sich die Energiemengen, die durch die Zerfälle der
+Isotope freigesetzt werden, nicht so extrem wie deren Mengen. Nur das letzte
+Isotop setzt keine Energie frei, da es nicht Zerfällt. Die Funktionen sind sehr
+ähnlich, und von der Grössenordnung her gleich.
+
+\end{document}

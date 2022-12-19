@@ -1,0 +1,14 @@
+\babel@toc {ngerman}{}\relax 
+\contentsline {section}{\numberline {1}Formulierung der Fragestellung}{1}{}%
+\contentsline {section}{\numberline {2}Physikalische Hintergründe}{2}{}%
+\contentsline {subsection}{\numberline {2.1}Die Menge eines Isotops als Funktion der Zeit}{2}{}%
+\contentsline {subsection}{\numberline {2.2}Die kumulativ freigesetzte Energie aller Zerfälle als Funktion der Zeit}{2}{}%
+\contentsline {section}{\numberline {3}Programmiertechnik}{3}{}%
+\contentsline {subsection}{\numberline {3.1}Simulations Algorithmus}{3}{}%
+\contentsline {subsubsection}{\numberline {3.1.1}Zerfallstyp auswählen}{3}{}%
+\contentsline {subsubsection}{\numberline {3.1.2}Generation eines einzelnen Zerfall-Events}{3}{}%
+\contentsline {subsubsection}{\numberline {3.1.3}Simulation des Schicksals eines Partikels}{3}{}%
+\contentsline {subsection}{\numberline {3.2}Allgemeine Struktur}{3}{}%
+\contentsline {section}{\numberline {4}Resultate}{4}{}%
+\contentsline {subsection}{\numberline {4.1}Die Menge eines Isotops als Funktion der Zeit}{4}{}%
+\contentsline {subsection}{\numberline {4.2}Die kumulativ freigesetzte Energie aller Zerfälle als Funktion der Zeit}{6}{}%

@@ -1,0 +1,18 @@
+# from to type probability half_time time_unit energy_MeV
+#
+# The half time for the first is so large, we need to
+# ignore it, else basically nothing is visible between
+# the first and the last isotopes.
+# Th(232) Ra(228) alpha    100.0    1.405e10 a
+#
+Ra(228) Ac(228) beta     100.0    5.75 a      0.046
+Ac(228) Th(228) beta     100.0    6.25 h      2.124
+Th(228) Ra(224) alpha    100.0    1.9116 a    5.520
+Ra(224) Rn(220) alpha    100.0    3.6319 d    5.798
+Rn(220) Po(216) alpha    100.0   55.6 s       6.404
+Po(216) Pb(212) alpha    100.0    0.145 s     6.906
+Pb(212) Bi(212) beta     100.0   10.64 h      0.570
+Bi(212) Po(212) beta      64.06  60.55 min    2.252
+Bi(212) Tl(208) alpha     35.94  60.55 min    6.208
+Po(212) Pb(208) alpha    100.0  299.0 ns      8.784
+Tl(208) Pb(208) beta     100.0    3.053 min   1.803
